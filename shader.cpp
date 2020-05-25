@@ -58,10 +58,26 @@ Program linkProgram(GLuint program) {
     return Program(program);
 }
 
+GLuint Program::loc(const char *name) const {
+    return glGetUniformLocation(program, name);
+}
+
 Program::Program(GLuint program): program(program) {
-    modelLoc = glGetUniformLocation(program, "model");
-    viewLoc = glGetUniformLocation(program, "view");
-    projectionLoc = glGetUniformLocation(program, "projection");
+    modelLoc = loc("model");
+    viewLoc = loc("view");
+    projectionLoc = loc("projection");
+
+    cameraLoc = loc("camera");
+
+    matAmbLoc = loc("material.ambient");
+    matDiffLoc = loc("material.diffuse");
+    matSpecLoc = loc("material.specular");
+    matShineLoc = loc("material.shininess");
+
+    lightPosLoc = loc("light.position");
+    lightAmbLoc = loc("light.ambient");
+    lightDiffLoc = loc("light.diffuse");
+    lightSpecLoc = loc("light.specular");
 }
 
 void Program::use() const {
@@ -78,4 +94,22 @@ void Program::setView(glm::mat4 view) const {
 
 void Program::setProjection(glm::mat4 projection) const {
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+}
+
+void Program::setCamera(glm::vec3 camera) {
+    glUniform3fv(cameraLoc, 1, glm::value_ptr(camera));
+}
+
+void Program::setMaterial(Material mat) {
+    glUniform3fv(matAmbLoc, 1, glm::value_ptr(mat.ambient));
+    glUniform3fv(matDiffLoc, 1, glm::value_ptr(mat.diffuse));
+    glUniform3fv(matSpecLoc, 1, glm::value_ptr(mat.specular));
+    glUniform1f(matShineLoc, mat.shininess);
+}
+
+void Program::setLight(Light light) {
+    glUniform3fv(lightPosLoc, 1, glm::value_ptr(light.position));
+    glUniform3fv(lightAmbLoc, 1, glm::value_ptr(light.ambient));
+    glUniform3fv(lightDiffLoc, 1, glm::value_ptr(light.diffuse));
+    glUniform3fv(lightSpecLoc, 1, glm::value_ptr(light.specular));
 }

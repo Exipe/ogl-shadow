@@ -41,6 +41,9 @@ int main() {
     }
 
     glViewport(0, 0, 800, 600);
+    glEnable(GL_DEPTH_TEST);
+
+    auto camera = glm::vec3(0, 0, 3);
 
     auto program = initProgram();
     auto cube = initCube();
@@ -48,21 +51,40 @@ int main() {
     program.use();
 
     auto model = glm::mat4(1.0);
-    model = glm::rotate(model, glm::radians(45.0f), glm::vec3(1.0, 1.0, 0.0));
+    model = glm::rotate(model, glm::radians(20.0f), glm::vec3(1.0, 1.0, 0.0));
     program.setModel(model);
 
     auto view = glm::mat4(1.0);
-    view = glm::translate(view, glm::vec3(0, 0, -3));
+    view = glm::translate(view, -camera);
     program.setView(view);
 
     auto projection = glm::perspective(glm::radians(45.0), 800.0 / 600.0, 0.1, 100.0);
     program.setProjection(projection);
 
+    Material mat { glm::vec3(1, 0, 0),
+                   glm::vec3(0.5, 0, 0.1),
+                   glm::vec3(0.5, 0.5, 0.5),
+                   16.0};
+
+    Light light {
+        glm::vec3(5, 5, 5),
+        glm::vec3(0.2, 0.2, 0.2),
+        glm::vec3(0.5, 0.5, 0.5),
+        glm::vec3(1.0, 1.0, 1.0)
+    };
+
+    program.setMaterial(mat);
+    program.setLight(light);
+    program.setCamera(camera);
+
     while(!glfwWindowShouldClose(window)) {
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        glClearColor(0.1, 0, 0.1, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         cube.render();
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     glfwTerminate();
