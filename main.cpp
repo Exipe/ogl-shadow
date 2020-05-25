@@ -7,6 +7,7 @@
 
 #include "shader.h"
 #include "cube.h"
+#include "texture.h"
 
 Program initProgram() {
     auto vertex = compileShader("shader/vertex.glsl", GL_VERTEX_SHADER);
@@ -77,10 +78,13 @@ int main() {
     program.setLight(light);
     program.setCamera(camera);
 
+    auto texture = loadTexture("texture/test.png");
+
     while(!glfwWindowShouldClose(window)) {
         glClearColor(0.1, 0, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        texture.bind();
         cube.render();
 
         glfwSwapBuffers(window);

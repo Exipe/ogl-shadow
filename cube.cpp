@@ -5,14 +5,14 @@
 #include "cube.h"
 
 float cube_vertices[] = {
-        -0.5, -0.5, 0.5, -1, -1, 1,
-        -0.5, 0.5, 0.5, -1, 1, 1,
-        0.5, 0.5, 0.5, 1, 1, 1,
-        0.5, -0.5, 0.5, 1, -1, 1,
-        -0.5, -0.5, -0.5, -1, -1, -1,
-        -0.5, 0.5, -0.5, -1, 1, -1,
-        0.5, 0.5, -0.5, 1, 1, -1,
-        0.5, -0.5, -0.5, 1, -1, -1
+        -0.5, -0.5, 0.5, -1, -1, 1, 0, 0,
+        -0.5, 0.5, 0.5, -1, 1, 1, 0, 1,
+        0.5, 0.5, 0.5, 1, 1, 1, 1, 1,
+        0.5, -0.5, 0.5, 1, -1, 1, 1, 0,
+        -0.5, -0.5, -0.5, -1, -1, -1, 1, 0,
+        -0.5, 0.5, -0.5, -1, 1, -1, 1, 1,
+        0.5, 0.5, -0.5, 1, 1, -1, 0, 0,
+        0.5, -0.5, -0.5, 1, -1, -1, 0, 1,
 };
 
 GLuint cube_elements[] = {
@@ -45,11 +45,14 @@ Cube initCube() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_elements), cube_elements, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     return Cube(vao);
 }

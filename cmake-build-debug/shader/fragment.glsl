@@ -1,7 +1,10 @@
 #version 330 core
 
+uniform sampler2D sampler;
+
 in vec3 fragNormal;
 in vec3 fragPos;
+in vec2 fragTexPos;
 
 struct Material
 {
@@ -36,5 +39,6 @@ void main() {
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 	vec3 specTerm = light.specular * material.specular * spec;
 
-	gl_FragColor = vec4(ambTerm + diffTerm + specTerm, 1.0);
+	vec4 texture = texture(sampler, fragTexPos);
+	gl_FragColor = vec4(texture.rgb * (ambTerm + diffTerm + specTerm), texture.a);
 }
