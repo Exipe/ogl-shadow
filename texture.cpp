@@ -25,5 +25,5 @@ Texture loadTexture(const char *fileName) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    return { texture, width, height };
+    return Texture(texture, width, height);
 }

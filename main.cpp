@@ -8,6 +8,7 @@
 #include "shader.h"
 #include "cube.h"
 #include "texture.h"
+#include "model.h"
 
 Program initProgram() {
     auto vertex = compileShader("shader/vertex.glsl", GL_VERTEX_SHADER);
@@ -44,7 +45,7 @@ int main() {
     glViewport(0, 0, 800, 600);
     glEnable(GL_DEPTH_TEST);
 
-    auto camera = glm::vec3(0, 0, 3);
+    auto camera = glm::vec3(0, 0, 5);
 
     auto program = initProgram();
     auto cube = initCube();
@@ -52,7 +53,8 @@ int main() {
     program.use();
 
     auto model = glm::mat4(1.0);
-    model = glm::rotate(model, glm::radians(20.0f), glm::vec3(1.0, 1.0, 0.0));
+    model = glm::translate(model, glm::vec3(0.0, -12, -40.0));
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
     program.setModel(model);
 
     auto view = glm::mat4(1.0);
@@ -62,30 +64,29 @@ int main() {
     auto projection = glm::perspective(glm::radians(45.0), 800.0 / 600.0, 0.1, 100.0);
     program.setProjection(projection);
 
-    Material mat { glm::vec3(1, 0, 0),
-                   glm::vec3(0.5, 0, 0.1),
-                   glm::vec3(0.5, 0.5, 0.5),
-                   16.0};
-
     Light light {
-        glm::vec3(5, 5, 5),
+        glm::vec3(0, 20, -20),
         glm::vec3(0.2, 0.2, 0.2),
         glm::vec3(0.5, 0.5, 0.5),
         glm::vec3(1.0, 1.0, 1.0)
     };
 
-    program.setMaterial(mat);
     program.setLight(light);
     program.setCamera(camera);
 
-    auto texture = loadTexture("texture/test.png");
+    auto texture = loadTexture("texture/Skull.jpg");
+
+    Model skull;
+    if(!loadModel(skull, "model", "model/12140_Skull_v3_L2.obj")) {
+        return -1;
+    }
 
     while(!glfwWindowShouldClose(window)) {
         glClearColor(0.1, 0, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         texture.bind();
-        cube.render();
+        skull.render(program);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

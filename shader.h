@@ -19,7 +19,7 @@ private:
     GLuint projectionLoc;
 
     GLuint cameraLoc;
-    GLuint matAmbLoc, matDiffLoc, matSpecLoc, matShineLoc;
+    GLuint matSpecLoc, matShineLoc;
     GLuint lightPosLoc, lightAmbLoc, lightDiffLoc, lightSpecLoc;
 
     GLuint loc(const char *name) const;
@@ -33,9 +33,9 @@ public:
     void setView(glm::mat4 view) const;
     void setProjection(glm::mat4 projection) const;
 
-    void setCamera(glm::vec3 camera);
-    void setMaterial(Material mat);
-    void setLight(Light light);
+    void setCamera(glm::vec3 camera) const;
+    void setMaterial(Material mat) const;
+    void setLight(Light light) const;
 };
 
 GLuint compileShader(const char* fileName, GLenum type);
