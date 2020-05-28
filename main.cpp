@@ -67,14 +67,16 @@ int main() {
     glEnable(GL_DEPTH_TEST);
 
     auto program = initProgram();
-    auto cube = initCube();
-
     program.use();
 
-    auto model = glm::mat4(1.0);
-    model = glm::translate(model, glm::vec3(0.0, -12, -40.0));
-    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
-    program.setModel(model);
+    auto skeleModel = glm::mat4(1.0);
+    skeleModel = glm::translate(skeleModel, glm::vec3(0.0, 0.0, -40.0));
+    skeleModel = glm::rotate(skeleModel, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
+    skeleModel = glm::scale(skeleModel, glm::vec3(0.25, 0.25, 0.25));
+
+    auto cubeModel = glm::mat4(1.0);
+    cubeModel = glm::translate(cubeModel, glm::vec3(0, 0, -60));
+    cubeModel = glm::scale(cubeModel, glm::vec3(20, 20, 5));
 
     auto projection = glm::perspective(glm::radians(45.0), 800.0 / 600.0, 0.1, 100.0);
     program.setProjection(projection);
@@ -87,6 +89,7 @@ int main() {
     };
     program.setLight(light);
 
+    auto cube = initCube();
 
     Model skull;
     if(!loadModel(skull, "model", "model/12140_Skull_v3_L2.obj")) {
@@ -107,14 +110,17 @@ int main() {
             cam.moveLeft(0.1);
         }
 
-
         glClearColor(0.1, 0, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         program.setCamera(cam.cameraPos);
         program.setView(cam.getViewMatrix());
 
+        program.setModel(skeleModel);
         skull.render(program);
+
+        program.setModel(cubeModel);
+        cube.render(program);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

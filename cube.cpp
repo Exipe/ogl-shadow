@@ -24,9 +24,12 @@ GLuint cube_elements[] = {
         1, 2, 5, 2, 5, 6
 };
 
-Cube::Cube(GLuint vao): vao(vao) {}
+Cube::Cube(GLuint vao, Material material, Texture texture): vao(vao), material(material), texture(texture) {}
 
-void Cube::render() const {
+void Cube::render(Program program) const {
+    texture.bind();
+    program.setMaterial(material);
+
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6 * 6, GL_UNSIGNED_INT, nullptr);
 }
@@ -54,5 +57,6 @@ Cube initCube() {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    return Cube(vao);
+    auto texture = loadTexture("texture/Crate.png");
+    return Cube(vao, { glm::vec3(0, 0, 0), 1.0 }, texture);
 }
