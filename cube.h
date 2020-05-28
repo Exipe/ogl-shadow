@@ -6,14 +6,19 @@
 #define OGL_SHADOW_CUBE_H
 
 #include <glad/glad.h>
+#include "texture.h"
+#include "light.h"
+#include "shader.h"
 
 class Cube {
 private:
     GLuint vao;
+    Material material;
+    Texture texture;
 
 public:
-    explicit Cube(GLuint vao);
-    void render() const;
+    Cube(GLuint vao, Material material, Texture texture);
+    void render(Program program) const;
 };
 
 Cube initCube();
