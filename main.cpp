@@ -9,6 +9,10 @@
 #include "cube.h"
 #include "texture.h"
 #include "model.h"
+#include "Camera.h"
+
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 Program initProgram() {
     auto vertex = compileShader("shader/vertex.glsl", GL_VERTEX_SHADER);
@@ -19,6 +23,20 @@ Program initProgram() {
     glAttachShader(program, fragment);
 
     return linkProgram(program);
+}
+
+Camera cam(glm::vec3(0.0, 0.0, 5.0), -90, 0);
+
+float lastX = (float) WINDOW_WIDTH / 2;
+float lastY = (float) WINDOW_HEIGHT / 2;
+
+void mouseMove(GLFWwindow* window, double posX, double posY) {
+    float offsetX = (posX - lastX) * 0.1;
+    float offsetY = (lastY - posY) * 0.1;
+    lastX = posX;
+    lastY = posY;
+
+    cam.rotate(offsetX, offsetY);
 }
 
 int main() {
@@ -36,6 +54,9 @@ int main() {
 
     glfwMakeContextCurrent(window);
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouseMove);
+
     //initialize GLAD
     if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
@@ -44,8 +65,6 @@ int main() {
 
     glViewport(0, 0, 800, 600);
     glEnable(GL_DEPTH_TEST);
-
-    auto camera = glm::vec3(0, 0, 5);
 
     auto program = initProgram();
     auto cube = initCube();
@@ -57,10 +76,6 @@ int main() {
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
     program.setModel(model);
 
-    auto view = glm::mat4(1.0);
-    view = glm::translate(view, -camera);
-    program.setView(view);
-
     auto projection = glm::perspective(glm::radians(45.0), 800.0 / 600.0, 0.1, 100.0);
     program.setProjection(projection);
 
@@ -70,11 +85,8 @@ int main() {
         glm::vec3(0.5, 0.5, 0.5),
         glm::vec3(1.0, 1.0, 1.0)
     };
-
     program.setLight(light);
-    program.setCamera(camera);
 
-    auto texture = loadTexture("texture/Skull.jpg");
 
     Model skull;
     if(!loadModel(skull, "model", "model/12140_Skull_v3_L2.obj")) {
@@ -82,10 +94,26 @@ int main() {
     }
 
     while(!glfwWindowShouldClose(window)) {
+        if(glfwGetKey(window, GLFW_KEY_W)) {
+            cam.moveForward(0.1);
+        }
+        if(glfwGetKey(window, GLFW_KEY_S)) {
+            cam.moveBackward(0.1);
+        }
+        if(glfwGetKey(window, GLFW_KEY_D)) {
+            cam.moveRight(0.1);
+        }
+        if(glfwGetKey(window, GLFW_KEY_A)) {
+            cam.moveLeft(0.1);
+        }
+
+
         glClearColor(0.1, 0, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        texture.bind();
+        program.setCamera(cam.cameraPos);
+        program.setView(cam.getViewMatrix());
+
         skull.render(program);
 
         glfwSwapBuffers(window);
