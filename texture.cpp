@@ -9,7 +9,8 @@
 
 Texture::Texture(GLuint texture, int width, int height): texture(texture), width(width), height(height) {}
 
-void Texture::bind() const {
+void Texture::bind(int textureUnit) const {
+    glActiveTexture(GL_TEXTURE0 + textureUnit);
     glBindTexture(GL_TEXTURE_2D, texture);
 }
 

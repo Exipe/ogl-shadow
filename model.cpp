@@ -36,10 +36,14 @@ Mesh::Mesh(std::vector<VertexData> &vertices, Texture texture, Material material
     this->material = material;
 }
 
-void Mesh::render(Program program) const {
+void Mesh::render(StandardProgram *program) const {
     texture.bind();
-    program.setMaterial(material);
+    program->setMaterial(material);
 
+    render();
+}
+
+void Mesh::render() const {
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, this->vertices);
 }
@@ -76,9 +80,15 @@ Mesh loadMesh(const tinyobj::attrib_t &attrib, const tinyobj::material_t &materi
 Model::Model(std::vector<Mesh> &meshes): meshes(meshes) {}
 Model::Model() = default;
 
-void Model::render(Program program) {
+void Model::render(StandardProgram *program) {
     for(Mesh m : meshes) {
         m.render(program);
+    }
+}
+
+void Model::render() {
+    for(Mesh m : meshes) {
+        m.render();
     }
 }
 

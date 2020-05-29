@@ -18,7 +18,8 @@ private:
 
 public:
     Cube(GLuint vao, Material material, Texture texture);
-    void render(Program program) const;
+    void render(StandardProgram *program) const;
+    void render() const;
 };
 
 Cube initCube();

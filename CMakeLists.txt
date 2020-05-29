@@ -9,7 +9,7 @@ find_package(OpenGL REQUIRED)
 #Search for GLFW library
 find_library(GLFW3_LIBRARY glfw3 "${CMAKE_SOURCE_DIR}/lib")
 
-add_executable(ogl_shadow glad.c main.cpp shader.h shader.cpp cube.h cube.cpp light.h texture.h texture.cpp model.h model.cpp Camera.cpp Camera.h)
+add_executable(ogl_shadow glad.c main.cpp shader.h shader.cpp cube.h cube.cpp light.h texture.h texture.cpp model.h model.cpp Camera.cpp Camera.h depth_map.h depth_map.cpp quad.h quad.cpp)
 
 include_directories(${OPENGL_INCLUDE_DIRS} "${CMAKE_SOURCE_DIR}/include")
 
