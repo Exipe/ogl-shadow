@@ -43,7 +43,17 @@ GLuint compileShader(const char *fileName, GLenum type) {
     return shader;
 }
 
-Program linkProgram(GLuint program) {
+Program::Program(GLuint program): program(program) {
+    link();
+}
+
+GLuint Program::loc(const char *name) const {
+    auto location = glGetUniformLocation(program, name);
+    //std::cout << name << " is at " << location << std::endl;
+    return location;
+}
+
+void Program::link() const {
     glLinkProgram(program);
 
     GLint success;
@@ -54,15 +64,13 @@ Program linkProgram(GLuint program) {
         glGetProgramInfoLog(program, 512, nullptr, infoLog);
         std::cout << "Error linking program: " << infoLog << std::endl;
     }
-
-    return Program(program);
 }
 
-GLuint Program::loc(const char *name) const {
-    return glGetUniformLocation(program, name);
+void Program::use() const {
+    glUseProgram(program);
 }
 
-Program::Program(GLuint program): program(program) {
+StandardProgram::StandardProgram(GLuint program): Program(program) {
     modelLoc = loc("model");
     viewLoc = loc("view");
     projectionLoc = loc("projection");
@@ -78,34 +86,56 @@ Program::Program(GLuint program): program(program) {
     lightSpecLoc = loc("light.specular");
 }
 
-void Program::use() const {
-    glUseProgram(program);
-}
-
-void Program::setModel(glm::mat4 model) const {
+void StandardProgram::setModel(glm::mat4 model) const {
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 }
 
-void Program::setView(glm::mat4 view) const {
+void StandardProgram::setView(glm::mat4 view) const {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 }
 
-void Program::setProjection(glm::mat4 projection) const {
+void StandardProgram::setProjection(glm::mat4 projection) const {
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 }
 
-void Program::setCamera(glm::vec3 camera) const {
+void StandardProgram::setCamera(glm::vec3 camera) const {
     glUniform3fv(cameraLoc, 1, glm::value_ptr(camera));
 }
 
-void Program::setMaterial(Material mat) const {
+void StandardProgram::setMaterial(Material mat) const {
     glUniform3fv(matSpecLoc, 1, glm::value_ptr(mat.specular));
     glUniform1f(matShineLoc, mat.shininess);
 }
 
-void Program::setLight(Light light) const {
+void StandardProgram::setLight(Light light) const {
     glUniform3fv(lightPosLoc, 1, glm::value_ptr(light.position));
     glUniform3fv(lightAmbLoc, 1, glm::value_ptr(light.ambient));
     glUniform3fv(lightDiffLoc, 1, glm::value_ptr(light.diffuse));
     glUniform3fv(lightSpecLoc, 1, glm::value_ptr(light.specular));
+}
+
+DepthProgram::DepthProgram(GLuint program) : Program(program) {
+    lightSpaceLoc = loc("lightSpace");
+    modelLoc = loc("model");
+}
+
+void DepthProgram::setLightSpace(glm::mat4 lightSpace) const {
+    glUniformMatrix4fv(lightSpaceLoc, 1, GL_FALSE, glm::value_ptr(lightSpace));
+}
+
+void DepthProgram::setModel(glm::mat4 model) const {
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+}
+
+ShadowProgram::ShadowProgram(GLuint program) : StandardProgram(program) {
+    lightSpaceLoc = loc("lightSpace");
+    depthMapLoc = loc("depthMap");
+}
+
+void ShadowProgram::setLightSpace(glm::mat4 lightSpace) const {
+    glUniformMatrix4fv(lightSpaceLoc, 1, GL_FALSE, glm::value_ptr(lightSpace));
+}
+
+void ShadowProgram::setDepthMap(int textureUnit) const {
+    glUniform1i(depthMapLoc, textureUnit);
 }

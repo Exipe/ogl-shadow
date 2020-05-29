@@ -15,7 +15,7 @@ private:
 
 public:
     Texture(GLuint texture, int width, int height);
-    void bind() const;
+    void bind(int unit = 0) const;
 };
 
 Texture loadTexture(const char *fileName);

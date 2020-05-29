@@ -26,10 +26,14 @@ GLuint cube_elements[] = {
 
 Cube::Cube(GLuint vao, Material material, Texture texture): vao(vao), material(material), texture(texture) {}
 
-void Cube::render(Program program) const {
+void Cube::render(StandardProgram *program) const {
     texture.bind();
-    program.setMaterial(material);
+    program->setMaterial(material);
 
+    render();
+}
+
+void Cube::render() const {
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6 * 6, GL_UNSIGNED_INT, nullptr);
 }

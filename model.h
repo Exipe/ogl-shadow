@@ -26,7 +26,8 @@ private:
 
 public:
     explicit Mesh(std::vector<VertexData> &vertices, Texture texture, Material material);
-    void render(Program program) const;
+    void render(StandardProgram *program) const;
+    void render() const;
 };
 
 class Model {
@@ -36,7 +37,8 @@ private:
 public:
     Model();
     explicit Model(std::vector<Mesh> &meshes);
-    void render(Program program);
+    void render(StandardProgram *program);
+    void render();
 };
 
 bool loadModel(Model &model, const char *directory, const char *fileName);

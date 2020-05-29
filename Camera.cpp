@@ -50,5 +50,3 @@ void Camera::moveRight(float speed) {
 void Camera::moveLeft(float speed) {
     moveRight(-speed);
 }
-
-
