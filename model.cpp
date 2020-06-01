@@ -6,6 +6,8 @@
 #include <glad/glad.h>
 #include "model.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
@@ -77,16 +79,29 @@ Mesh loadMesh(const tinyobj::attrib_t &attrib, const tinyobj::material_t &materi
     return Mesh(vertices, texture, { specular, shininess });
 }
 
-Model::Model(std::vector<Mesh> &meshes): meshes(meshes) {}
+Model::Model(std::vector<Mesh> &meshes): rotation(-90.0f), scale(1.0f), rotationAxis(1.0f, 0.0f, 0.0f),
+                                            position(0.0f, 0.0f, 0.0f), meshes(meshes) {}
 Model::Model() = default;
 
+glm::mat4 Model::prepareMatrix() const {
+    glm::mat4 m(1.0);
+    m = glm::translate(m, position);
+    m = glm::rotate(m,glm::radians(rotation), rotationAxis);
+    m = glm::scale(m, glm::vec3(scale, scale, scale));
+    return m;
+}
+
 void Model::render(StandardProgram *program) {
+    program->setModel(prepareMatrix());
+
     for(Mesh m : meshes) {
         m.render(program);
     }
 }
 
-void Model::render() {
+void Model::renderDepth(DepthProgram program) {
+    program.setModel(prepareMatrix());
+
     for(Mesh m : meshes) {
         m.render();
     }
