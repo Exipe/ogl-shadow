@@ -70,6 +70,18 @@ public:
     explicit DepthProgram(GLuint program);
 };
 
+class SkyProgram: public Program {
+private:
+    GLuint viewLoc;
+    GLuint projectionLoc;
+
+public:
+    void setView(glm::mat3 view) const;
+    void setProjection(glm::mat4 projection) const;
+
+    explicit SkyProgram(GLuint program);
+};
+
 GLuint compileShader(const char* fileName, GLenum type);
 
 #endif //OGL_SHADOW_SHADER_H

@@ -139,3 +139,16 @@ void ShadowProgram::setLightSpace(glm::mat4 lightSpace) const {
 void ShadowProgram::setDepthMap(int textureUnit) const {
     glUniform1i(depthMapLoc, textureUnit);
 }
+
+SkyProgram::SkyProgram(GLuint program) : Program(program) {
+    viewLoc = loc("view");
+    projectionLoc = loc("projection");
+}
+
+void SkyProgram::setView(glm::mat3 view) const {
+    glUniformMatrix3fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+}
+
+void SkyProgram::setProjection(glm::mat4 projection) const {
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+}

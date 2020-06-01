@@ -13,13 +13,11 @@
 class Cube {
 private:
     GLuint vao;
-    Material material;
-    Texture texture;
+    GLuint textureId;
 
 public:
-    Cube(GLuint vao, Material material, Texture texture);
-    void render(StandardProgram *program) const;
-    void render() const;
+    Cube(GLuint vao, GLuint textureId);
+    void render(SkyProgram program) const;
 };
 
 Cube initCube();

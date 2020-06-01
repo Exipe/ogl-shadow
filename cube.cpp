@@ -5,14 +5,14 @@
 #include "cube.h"
 
 float cube_vertices[] = {
-        -0.5, -0.5, 0.5, -1, -1, 1, 0, 0,
-        -0.5, 0.5, 0.5, -1, 1, 1, 0, 1,
-        0.5, 0.5, 0.5, 1, 1, 1, 1, 1,
-        0.5, -0.5, 0.5, 1, -1, 1, 1, 0,
-        -0.5, -0.5, -0.5, -1, -1, -1, 1, 0,
-        -0.5, 0.5, -0.5, -1, 1, -1, 1, 1,
-        0.5, 0.5, -0.5, 1, 1, -1, 0, 0,
-        0.5, -0.5, -0.5, 1, -1, -1, 0, 1,
+        -1, -1, 1,
+        -1, 1, 1,
+        1, 1, 1,
+        1, -1, 1,
+        -1, -1, -1,
+        -1, 1, -1,
+        1, 1, -1,
+        1, -1, -1
 };
 
 GLuint cube_elements[] = {
@@ -24,16 +24,10 @@ GLuint cube_elements[] = {
         1, 2, 5, 2, 5, 6
 };
 
-Cube::Cube(GLuint vao, Material material, Texture texture): vao(vao), material(material), texture(texture) {}
+Cube::Cube(GLuint vao, GLuint textureId): vao(vao), textureId(textureId) {}
 
-void Cube::render(StandardProgram *program) const {
-    texture.bind();
-    program->setMaterial(material);
-
-    render();
-}
-
-void Cube::render() const {
+void Cube::render(SkyProgram program) const {
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6 * 6, GL_UNSIGNED_INT, nullptr);
 }
@@ -52,15 +46,9 @@ Cube initCube() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_elements), cube_elements, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    auto texture = loadTexture("texture/Crate.png");
-    return Cube(vao, { glm::vec3(0, 0, 0), 1.0 }, texture);
+    auto texture = initCubeMap("texture/sky");
+    return {vao, texture};
 }

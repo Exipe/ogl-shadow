@@ -5,7 +5,10 @@
 #ifndef OGL_SHADOW_TEXTURE_H
 #define OGL_SHADOW_TEXTURE_H
 
+#include <string>
 #include <glad/glad.h>
+
+GLuint initCubeMap(std::string folder);
 
 class Texture {
 private:

@@ -29,6 +29,17 @@ ShadowProgram initShadowProgram() {
     return ShadowProgram(program);
 }
 
+SkyProgram initSkyProgram() {
+    auto vertex = compileShader("shader/sky-vertex.glsl", GL_VERTEX_SHADER);
+    auto fragment = compileShader("shader/sky-fragment.glsl", GL_FRAGMENT_SHADER);
+
+    auto program = glCreateProgram();
+    glAttachShader(program, vertex);
+    glAttachShader(program, fragment);
+
+    return SkyProgram(program);
+}
+
 Program initDepthDemoProgram() {
     auto vertex = compileShader("shader/depth-demo-vertex.glsl", GL_VERTEX_SHADER);
     auto fragment = compileShader("shader/depth-demo-fragment.glsl", GL_FRAGMENT_SHADER);
@@ -182,6 +193,11 @@ int main() {
 
 
 
+    auto skyProgram = initSkyProgram();
+    skyProgram.use();
+    skyProgram.setProjection(projection);
+    auto sky = initCube();
+
     auto shadowProgram = initShadowProgram();
     shadowProgram.use();
 
@@ -271,6 +287,12 @@ int main() {
             glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
             glClearColor(0.1, 0, 0, 1.0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glDepthMask(GL_FALSE);
+            skyProgram.use();
+            skyProgram.setView(glm::mat3(cam.getViewMatrix()));
+            sky.render(skyProgram);
+            glDepthMask(GL_TRUE);
 
             shadowProgram.use();
             depthMap.bindTexture(1);
