@@ -33,12 +33,18 @@ public:
 class Model {
 private:
     std::vector<Mesh> meshes;
+    glm::mat4 prepareMatrix() const;
 
 public:
+    float rotation, scale;
+    glm::vec3 rotationAxis;
+    glm::vec3 position;
+
     Model();
+
     explicit Model(std::vector<Mesh> &meshes);
     void render(StandardProgram *program);
-    void render();
+    void renderDepth(DepthProgram program);
 };
 
 bool loadModel(Model &model, const char *directory, const char *fileName);
