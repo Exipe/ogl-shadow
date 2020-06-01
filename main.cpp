@@ -147,19 +147,81 @@ int main() {
 
 
 
+    auto dinoModel = glm::mat4(1.0) ;
+    dinoModel = glm::translate(dinoModel, glm::vec3(0.5, -0.5, -40.0));
+    dinoModel = glm::scale(dinoModel, glm::vec3(0.3, 0.3, 0.3));
+
+    Model dino;
+    if(!loadModel(dino, "model", "model/12221_Cat_v1_l3.obj")){
+        return -1;
+    }
+
+    auto garfModel = glm::mat4(1.0) ;
+    garfModel = glm::translate(garfModel, glm::vec3(0.0, -3.5, -20.0));
+    garfModel = glm::rotate(garfModel, glm::radians(-90.0f) ,glm::vec3(1.0, 0.0, 0.0));
+    garfModel = glm::scale(garfModel, glm::vec3(0.5, 0.5, 0.5));
+
+    Model garf;
+    if(!loadModel(garf, "model", "model/20430_Cat_v1_NEW.obj")){
+        return -1;
+    }
+
+    auto duckLModel = glm::mat4(1.0) ;
+    duckLModel = glm::translate(duckLModel, glm::vec3(6.0, -8.5, -20.0));
+    duckLModel = glm::rotate(duckLModel, glm::radians(-90.0f) ,glm::vec3(1.0, 0.0, 1.0));
+    duckLModel = glm::scale(duckLModel, glm::vec3(0.5, 0.5, 0.5));
+
+    Model duckL;
+    if(!loadModel(duckL, "model", "model/12248_Bird_v1_l2.obj")){
+        return -1;
+    }
+
+    auto duckRModel = glm::mat4(1.0) ;
+    duckRModel = glm::translate(duckRModel, glm::vec3(-6.0, -8.5, -20.0));
+    duckRModel = glm::rotate(duckRModel, glm::radians(-90.0f) ,glm::vec3(1.0, 0.0, -1.0));
+    duckRModel = glm::scale(duckRModel, glm::vec3(0.5, 0.5, 0.5));
+
+    Model duckR;
+    if(!loadModel(duckR, "model", "model/12248_Bird_v1_l2.obj")){
+        return -1;
+    }
+
+    auto eyeRModel = glm::mat4(1.0) ;
+    eyeRModel = glm::translate(eyeRModel, glm::vec3(-5.0, 7.0, -30.0));
+    eyeRModel = glm::rotate(eyeRModel, glm::radians(-90.0f) ,glm::vec3(1.0, 0.0, 0.0));
+    eyeRModel = glm::scale(eyeRModel, glm::vec3(0.1, 0.1, 0.1));
+
+    Model eyeR;
+    if(!loadModel(eyeR, "model", "model/12221_Cat_v1_l3.obj")){
+        return -1;
+    }
+
+    auto eyeLModel = glm::mat4(1.0) ;
+    eyeLModel = glm::translate(eyeLModel, glm::vec3(5.0, 7.0, -30.0));
+    eyeLModel = glm::rotate(eyeLModel, glm::radians(-90.0f) ,glm::vec3(1.0, 0.0, 0.0));
+    eyeLModel = glm::scale(eyeLModel, glm::vec3(0.1, 0.1, 0.1));
+
+    Model eyeL;
+    if(!loadModel(eyeL, "model", "model/12221_Cat_v1_l3.obj")){
+        return -1;
+    }
+
     auto skeleModel = glm::mat4(1.0);
-    skeleModel = glm::translate(skeleModel, glm::vec3(0.0, 0.0, -40.0));
+    skeleModel = glm::translate(skeleModel, glm::vec3(0.0, -10.5, -50.0));
     skeleModel = glm::rotate(skeleModel, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
-    skeleModel = glm::scale(skeleModel, glm::vec3(0.25, 0.25, 0.25));
+    skeleModel = glm::scale(skeleModel, glm::vec3(0.65, 0.65, 0.65));
 
     Model skull;
     if(!loadModel(skull, "model", "model/12140_Skull_v3_L2.obj")) {
         return -1;
     }
 
+    float bob = 0;
+    float bol = 1;
+
     auto cubeModel = glm::mat4(1.0);
-    cubeModel = glm::translate(cubeModel, glm::vec3(0, 0, -60));
-    cubeModel = glm::scale(cubeModel, glm::vec3(20, 20, 5));
+    cubeModel = glm::translate(cubeModel, glm::vec3(0, 0.0, -50));
+    cubeModel = glm::scale(cubeModel, glm::vec3(20, 15, 10));
 
     auto cube = initCube();
 
@@ -190,10 +252,27 @@ int main() {
             mode = 3;
         }
 
+        if(bob == 5.0)
+            bol = -1.0;
+
+
+        else if(bob == 0.0 )
+            bol = 1.0;
+
+
+        bob =bob + bol;
+
+
+        eyeLModel = glm:: translate(eyeLModel, glm::vec3(0.0, 0.0, bol));
+        eyeRModel = glm::translate(eyeRModel, glm::vec3(0.0, 0.0, bol));
+        dinoModel = glm::rotate(dinoModel, (float)glfwGetTime()/1000 ,glm::vec3(0.0, 0.0, 1.0));
         if(mode == 1) {
             glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
             glClearColor(0.1, 0, 0.1, 1.0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+
 
             program.use();
 
@@ -202,6 +281,25 @@ int main() {
 
             program.setModel(skeleModel);
             skull.render(&program);
+
+            program.setModel(garfModel);
+            garf.render(&program);
+
+            program.setModel(eyeLModel);
+            eyeL.render(&program);
+
+
+            program.setModel(eyeRModel);
+            eyeR.render(&program);
+
+            program.setModel(duckLModel);
+            duckL.render(&program);
+
+            program.setModel(duckRModel);
+            duckR.render(&program);
+
+            program.setModel(dinoModel);
+            dino.render(&program);
 
             program.setModel(cubeModel);
             cube.render(&program);
@@ -212,10 +310,31 @@ int main() {
             glViewport(0, 0, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT);
             depthMap.bind();
             glClear(GL_DEPTH_BUFFER_BIT);
+
             depthProgram.setModel(skeleModel);
             skull.render();
-            depthProgram.setModel(cubeModel);
-            cube.render();
+
+            depthProgram.setModel(garfModel);
+            garf.render();
+
+            depthProgram.setModel(eyeLModel);
+            eyeL.render();
+
+            depthProgram.setModel(eyeRModel);
+            eyeR.render();
+
+            depthProgram.setModel(duckLModel);
+            duckL.render();
+
+            depthProgram.setModel(duckRModel);
+            duckR.render();
+
+            depthProgram.setModel(dinoModel);
+            dino.render();
+
+            /*depthProgram.setModel(cubeModel);
+            cube.render();*/
+
             depthMap.unbind();
         }
 
@@ -233,8 +352,26 @@ int main() {
             shadowProgram.setModel(skeleModel);
             skull.render(&shadowProgram);
 
-            shadowProgram.setModel(cubeModel);
-            cube.render(&shadowProgram);
+            shadowProgram.setModel(garfModel);
+            garf.render(&shadowProgram);
+
+            shadowProgram.setModel(eyeLModel);
+            eyeL.render(&shadowProgram);
+
+            shadowProgram.setModel(eyeRModel);
+            eyeR.render(&shadowProgram);
+
+            shadowProgram.setModel(duckLModel);
+            duckL.render(&shadowProgram);
+
+            shadowProgram.setModel(duckRModel);
+            duckR.render(&shadowProgram);
+
+            shadowProgram.setModel((dinoModel));
+            dino.render(&shadowProgram);
+
+            /*shadowProgram.setModel(cubeModel);
+            cube.render(&shadowProgram);*/
         }
 
         if(mode == 3) {
