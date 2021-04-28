@@ -6,11 +6,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "shader.h"
-#include "cube.h"
-#include "model.h"
-#include "Camera.h"
+#include "mesh/cube.h"
+#include "mesh/model.h"
+#include "camera.h"
 #include "depth_map.h"
-#include "quad.h"
+#include "mesh/quad.h"
 
 #define SHADOW_MAP_WIDTH 1024
 #define SHADOW_MAP_HEIGHT 1024
@@ -73,7 +73,7 @@ StandardProgram initStandardProgram() {
     return StandardProgram(program);
 }
 
-Camera cam(glm::vec3(0.0, 0.0, 5.0), -90, 0);
+camera cam(glm::vec3(0.0, 0.0, 5.0), -90, 0);
 
 float lastX = (float) WINDOW_WIDTH / 2;
 float lastY = (float) WINDOW_HEIGHT / 2;

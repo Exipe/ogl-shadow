@@ -7,8 +7,8 @@
 
 #include <vector>
 #include <glm/glm.hpp>
-#include "texture.h"
-#include "shader.h"
+#include "../texture/texture.h"
+#include "../shader.h"
 
 struct VertexData {
     glm::vec3 position;

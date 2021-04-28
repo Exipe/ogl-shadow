@@ -7,7 +7,7 @@
 
 #include <glm/glm.hpp>
 
-class Camera {
+class camera {
 private:
     float yaw;
     float pitch;
@@ -19,7 +19,7 @@ public:
     glm::vec3 cameraFront;
     glm::vec3 cameraUp;
 
-    explicit Camera(glm::vec3 cameraPos, float yaw, float pitch);
+    explicit camera(glm::vec3 cameraPos, float yaw, float pitch);
     glm::mat4 getViewMatrix();
 
     void rotate(float x, float y);

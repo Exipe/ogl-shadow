@@ -6,9 +6,9 @@
 #define OGL_SHADOW_CUBE_H
 
 #include <glad/glad.h>
-#include "texture.h"
-#include "light.h"
-#include "shader.h"
+#include "../texture/texture.h"
+#include "../light.h"
+#include "../shader.h"
 
 class Cube {
 private:

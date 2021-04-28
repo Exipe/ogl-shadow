@@ -6,7 +6,7 @@
 #define OGL_SHADOW_DEPTH_MAP_H
 
 #include <glad/glad.h>
-#include "texture.h"
+#include "texture/texture.h"
 
 class DepthMap {
 public:
